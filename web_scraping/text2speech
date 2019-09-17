@@ -1,0 +1,79 @@
+import os
+import requests
+from bs4 import BeautifulSoup as bs
+import json
+from string import punctuation
+import wave
+
+loop = True
+count = 0
+sentence = list()
+
+dictKey = '616ad343-5642-4050-9c64-8e2c4745eeec'
+thesKey = 'ea8db729-8cea-48c9-b820-ed95859f6909'
+url = 'https://www.dictionaryapi.com/api/v3/references/collegiate/json/{}?key={}'
+soundURL = 'https://media.merriam-webster.com/soundc11/{}/{}.wav'
+sub = ''
+#'https://media.merriam-webster.com/soundc11/[subdirectory]/[base filename].wav'
+"""
+while loop:
+    word = input('Enter a word(type a period to end):\n')
+    if word == '.':
+        break
+    sentence.append(word)"""
+
+sen = input('Type a sentence\n')
+sentence = sen.split()
+
+for word in sentence:
+    audio = ''
+    r = requests.get(url.format(word, dictKey))
+    print(r.status_code)
+    j = json.loads(r.content)[0]
+
+    #find sound file
+    try:
+        prs = j['hwi']['prs']
+
+        #print(prs)
+
+        audio = prs[0]['sound']['audio']
+    except:
+        try:
+            audio = prs[-1]['sound']['audio']
+            print(audio)
+        except:
+            print(j['hwi'])
+            print('error on {}'.format(word))
+            continue
+
+    num = False
+
+    try:
+        int(audio[0])
+        num = True
+    except:
+        pass
+
+    if 'bix' in audio:
+            sub = 'bix'
+    elif 'gg' in audio:
+            sub = 'gg'
+    elif any(p in audio[0] for p in punctuation) or num:
+            sub = 'number'
+    else:
+            sub = audio[0]
+
+    r = requests.get(soundURL.format(sub, audio))
+
+    open('sounds/{}.wav'.format(count), 'wb').write(r.content)
+
+    count += 1
+
+[print(word, end=' ') for word in sentence]
+print('.')
+
+for i in range(0, count):
+    os.system('afplay sounds/{}.wav'.format(i))
+
+#[print(key) for key, val in prs.items()]
