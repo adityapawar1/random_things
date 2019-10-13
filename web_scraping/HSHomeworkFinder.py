@@ -16,7 +16,7 @@ except:
     
 password = input('Enter your password')
 if (len(password) == 0):
-    password = 'SaltArmyWith37'
+    password = '' # Default Password
     
 login = {
     'username': 'Aditya.Pawar',
