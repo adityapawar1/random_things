@@ -1,0 +1,78 @@
+import requests
+from bs4 import BeautifulSoup as bs
+import json
+
+dictKey = '616ad343-5642-4050-9c64-8e2c4745eeec'
+thesKey = 'ea8db729-8cea-48c9-b820-ed95859f6909'
+url = 'https://www.dictionaryapi.com/api/v3/references/collegiate/json/{}?key={}'
+filename = 'tbt_part2.txt'
+new_filename = 'output.txt'
+
+words = input('Enter the words you need seperated by a comma and a space: ')
+words = words.split(', ')
+
+out = open(new_filename, 'w+')
+
+
+def findWord(term):
+    global file
+    file = open(filename)
+
+    return_line = ''
+    line_before = ''
+    line_after = False
+
+    for c, line in enumerate(file):
+        line.strip().split('/n')
+        if line_after:
+            print(line)
+            out.write(line)
+            out.write('\n')
+            line_after = False
+
+        if term in line:
+            print('\t\t' + line_before + ' ' + line)
+            out.write('\t\t' + line_before + ' ' + line)
+            line_after = True
+
+        line_before = line
+
+
+
+for word in words:
+    r = requests.get(url.format(word, dictKey))
+    # print(r.status_code)
+    j = json.loads(r.content)[0]
+
+    defintions = j['shortdef']
+    part_of_speech = j['fl']
+
+    print(word + ':')
+    out.write(word + ':')
+    out.write('\n')
+
+    print('\tPart of Speech: {}'.format(part_of_speech))
+    out.write('\tPart of Speech: {}'.format(part_of_speech))
+    out.write('\n')
+
+    print('\tDefintions')
+    out.write('\tDefinitions')
+    out.write('\n')
+
+    for defintion in defintions:
+        print('\t\t' + defintion)
+        out.write('\t\t' + defintion)
+        out.write('\n')
+
+    print('\tContext')
+    out.write('\tContext')
+    out.write('\n')
+
+    findWord(word)
+
+    print('\n')
+    out.write('\n')
+    out.write('\n')
+
+file.close()
+out.close()
