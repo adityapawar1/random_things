@@ -180,7 +180,8 @@ class Population:
             self.GOAT_gen['generation'] = self.generation
             self.GOAT_gen['fitness'] = totalfit/len(self.population)
         
-        print('Generation: {}'.format(self.generation))
+        if bestteams_console or avrteam_stats_console:
+            print('Generation: {}'.format(self.generation))
 
         if avrteam_stats_console:
             print('\nAverage Fitness: {}'.format(totalfit/len(self.population)))
@@ -338,24 +339,24 @@ FLEX_names.extend(TE_names)
 FLEX_names.extend(RB_names)
 FLEX_names.extend(WR_names)
 
-generations = 1000
-genetic_algorithm = Population(250, 0.03)
+generations = 100
+genetic_algorithm = Population(300, 0.01)
 
 for i in range(generations):
     genetic_algorithm.calcFitness()
     genetic_algorithm.select()
     genetic_algorithm.reproduce()
 
-generations = 1000
-genetic_algorithm = Population(250, 0.05)
+generations = 200
+genetic_algorithm = Population(100, 0.01)
 
 for i in range(generations):
     genetic_algorithm.calcFitness()
     genetic_algorithm.select()
     genetic_algorithm.reproduce()
 
-generations = 1000
-genetic_algorithm = Population(250, 0.1)
+generations = 500
+genetic_algorithm = Population(300, 0.01)
 
 for i in range(generations):
     genetic_algorithm.calcFitness()
